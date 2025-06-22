@@ -12,7 +12,7 @@ A project to develop a Named Entity Recognition (NER) system for extracting prod
 2.  Create and activate a virtual environment:
     ```bash
     python -m venv .venv
-    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    source venv/bin/activate  # On Windows: .venv\Scripts\activate
     ```
 3.  Install dependencies:
     ```bash
@@ -29,7 +29,8 @@ A project to develop a Named Entity Recognition (NER) system for extracting prod
 
 - `data/`: Stores raw, processed, and labeled data.
 - `src/`: Contains source code for ingestion, preprocessing, and labeling.
-- `tests/`: Contains unit tests (to be added).
+- `tests/`: Contains unit tests.
+- `.github/workflows/`: Contains CI/CD configuration.
 - `requirements.txt`: Lists project dependencies.
 
 ## Tasks
@@ -60,3 +61,11 @@ A project to develop a Named Entity Recognition (NER) system for extracting prod
     ```
     - Generates a CoNLL file with sampled messages.
     - Manually label the file and save as `data/labeled/labeled_data_final.conll`.
+
+## CI/CD Workflow
+
+- A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/pull to `main`:
+  - Lints code with `flake8`.
+  - Runs tests with `pytest` for preprocessing and labeling.
+- To add tests, update `tests/test_pipeline.py`.
+- Ensure all dependencies are listed in `requirements.txt`.
