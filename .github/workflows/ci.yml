@@ -1,0 +1,33 @@
+name: CI Workflow
+
+   on:
+     push:
+       branches: [ main ]
+     pull_request:
+       branches: [ main ]
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+
+       steps:
+       - name: Checkout code
+         uses: actions/checkout@v4
+
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+           python-version: '3.8'
+
+       - name: Install dependencies
+         run: |
+           pip install --upgrade pip
+           pip install -r requirements.txt
+
+       - name: Run linting with flake8
+         run: |
+           flake8 --max-line-length=88 --ignore=E203,W503 src/ tests/
+
+       - name: Run tests with pytest
+         run: |
+           pytest tests/ -v
