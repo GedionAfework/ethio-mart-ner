@@ -15,7 +15,11 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "labeled"
 DATA_DIR = os.path.abspath(DATA_DIR)
 CONLL_FILE = os.path.join(DATA_DIR, "relabeled_data_20250622_232809.conll")
 MODEL_NAME = "xlm-roberta-base"
-OUTPUT_DIR = "models/fine_tuned_ner"
+OUTPUT_DIR = os.path.join(
+    os.path.dirname(__file__), "..", "..", "models", "fine_tuned_ner"
+)
+OUTPUT_DIR = os.path.abspath(OUTPUT_DIR)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 label_list = ["O", "B-Product", "I-Product", "B-LOC", "I-LOC", "B-PRICE", "I-PRICE"]
 label2id = {label: idx for idx, label in enumerate(label_list)}
@@ -29,9 +33,18 @@ def load_conll(file_path):
         for line in f:
             line = line.strip()
             if line:
-                token, label = line.split()
-                current_sentence.append(token)
-                current_labels.append(label2id[label])
+                try:
+                    token, label = line.split()
+                    if label not in label2id:
+                        print(
+                            f"Warning: Label '{label}' not in label2id, skipping token."
+                        )
+                        continue
+                    current_sentence.append(token)
+                    current_labels.append(label2id[label])
+                except ValueError:
+                    print(f"Skipping invalid line: {line}")
+                    continue
             else:
                 if current_sentence:
                     sentences.append(current_sentence)
@@ -40,6 +53,9 @@ def load_conll(file_path):
     if current_sentence:
         sentences.append(current_sentence)
         labels.append(current_labels)
+    if not sentences:
+        raise ValueError("No valid data loaded from CoNLL file.")
+    print(f"Loaded {len(sentences)} sentences from {file_path}")
     return {"tokens": sentences, "ner_tags": labels}
 
 
@@ -55,7 +71,8 @@ def tokenize_and_align_labels(examples):
         examples["tokens"],
         truncation=True,
         is_split_into_words=True,
-        padding=True,
+        padding="max_length",
+        max_length=128,
         return_tensors="pt",
     )
     labels = []
@@ -87,7 +104,9 @@ def compute_metrics(p):
         [label_list[p] for (p, l) in zip(pred, label) if l != -100]
         for pred, label in zip(predictions, labels)
     ]
-    results = metric.compute(predictions=pred_labels, references=true_labels)
+    results = metric.compute(
+        predictions=pred_labels, references=true_labels, zero_division=0
+    )
     return {
         "precision": results["overall_precision"],
         "recall": results["overall_recall"],
@@ -98,7 +117,7 @@ def compute_metrics(p):
 
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     save_strategy="epoch",
     learning_rate=2e-5,
     per_device_train_batch_size=16,
@@ -107,6 +126,8 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     load_best_model_at_end=True,
     metric_for_best_model="f1",
+    logging_dir=os.path.join(OUTPUT_DIR, "logs"),
+    logging_steps=10,
 )
 
 trainer = Trainer(

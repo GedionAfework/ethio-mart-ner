@@ -7,3 +7,7 @@ data/raw/
 data/processed/
 *.csv
 *.jpg
+*.safetensors
+*.pt
+*.pth
+*.bin
