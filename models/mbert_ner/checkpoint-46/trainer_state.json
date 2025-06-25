@@ -1,0 +1,74 @@
+{
+  "best_global_step": 46,
+  "best_metric": 0.7971484121840571,
+  "best_model_checkpoint": "C:\\Users\\Gedion Afework\\Desktop\\kaim\\ethio-mart-ner\\models\\mbert_ner\\checkpoint-46",
+  "epoch": 1.0,
+  "eval_steps": 500,
+  "global_step": 46,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 0.21739130434782608,
+      "grad_norm": 8.520353317260742,
+      "learning_rate": 1.8695652173913045e-05,
+      "loss": 1.2732,
+      "step": 10
+    },
+    {
+      "epoch": 0.43478260869565216,
+      "grad_norm": 4.588556289672852,
+      "learning_rate": 1.7246376811594206e-05,
+      "loss": 0.9171,
+      "step": 20
+    },
+    {
+      "epoch": 0.6521739130434783,
+      "grad_norm": 5.7346625328063965,
+      "learning_rate": 1.5797101449275363e-05,
+      "loss": 0.6129,
+      "step": 30
+    },
+    {
+      "epoch": 0.8695652173913043,
+      "grad_norm": 12.927739143371582,
+      "learning_rate": 1.4347826086956522e-05,
+      "loss": 0.6052,
+      "step": 40
+    },
+    {
+      "epoch": 1.0,
+      "eval_accuracy": 0.8445099484156227,
+      "eval_f1": 0.7971484121840571,
+      "eval_loss": 0.42682182788848877,
+      "eval_precision": 0.8277254374158816,
+      "eval_recall": 0.76875,
+      "eval_runtime": 18.929,
+      "eval_samples_per_second": 4.86,
+      "eval_steps_per_second": 0.317,
+      "step": 46
+    }
+  ],
+  "logging_steps": 10,
+  "max_steps": 138,
+  "num_input_tokens_seen": 0,
+  "num_train_epochs": 3,
+  "save_steps": 500,
+  "stateful_callbacks": {
+    "TrainerControl": {
+      "args": {
+        "should_epoch_stop": false,
+        "should_evaluate": false,
+        "should_log": false,
+        "should_save": true,
+        "should_training_stop": false
+      },
+      "attributes": {}
+    }
+  },
+  "total_flos": 23779079740416.0,
+  "train_batch_size": 8,
+  "trial_name": null,
+  "trial_params": null
+}
